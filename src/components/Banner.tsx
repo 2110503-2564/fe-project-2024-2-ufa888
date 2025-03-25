@@ -2,36 +2,33 @@
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
-import { useState } from 'react';
 
 export default function Banner() {
 
-    const [index, setIndex] = useState(0);
     const router = useRouter();
 
-    const { data:session } = useSession();
-
     return (
-        <div className="block m-[0] w-[100vw] h-[50vh] relative" onClick={() => setIndex((index+1)%4)}>
+        <div className="block m-[0] w-[90vw] h-[80vh] relative">
             <Image 
-            src={`/img/cover${index==0?"":`${index+1}`}.jpg`}
+            src={`/img/banner.png`}
             alt="Banner"
             fill={true}
-            style={{objectFit:"cover"}}/>
-            <div className="relative top-[50px] z-20 text-center bg-black/80 py-[20px] rounded-lg">
-                <h1 className='text-4xl font-medium'>where every event finds its venue</h1>
-                <h3 className='text-xl font-serif' style={{marginTop:"8px"}}>Looking for the perfect venue for your next event? We offer a spacious and well-equipped venue for all types of gatherings, including weddings, corporate events, birthday parties, and more.</h3>
+            style={{objectFit:"cover"}}
+            className="rounded-xl"/>
+            <div className="relative flex flex-col gap-5 h-full content-center items-center z-20 top-[100px] text-center">
+                <div>
+                    <span className="text-[#F3E158] text-6xl font-bold">UFA</span>
+                    <span className="text-[#D3C44E] text-6xl font-bold">888</span>
+                </div>
+                <div className='text-2xl'>Get the hotel which you want</div>
+                <button className="text-[16px] bg-black text-white px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-white hover:text-black duration-300" 
+                onClick={(e) => {
+                    e.stopPropagation();
+                    router.push('/hotels');
+                }}>
+                    See All Hotels
+                </button>
             </div>
-            {
-                session ? <div className='z-30 absolute top-5 right-10 font-semibold text-white bg-black/80 px-[10px] rounded-[16px] py-[5px] text-xl'>Welcome {session.user?.name}</div>:null
-            }
-            <button className="bg-white text-cyan-600 border border-cyan-600 font-semibold py-2 px-2 m-2 rounded z-30 absolute bottom-0 right-0 hover:bg-cyan-600 hover:text-white hover:border-transparent" 
-            onClick={(e) => {
-                e.stopPropagation();
-                router.push('/venue');
-            }}>
-                Select Venue
-            </button>
         </div>
     )
 }

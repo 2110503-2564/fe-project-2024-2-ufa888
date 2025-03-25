@@ -20,7 +20,7 @@ export default async function TopMenu() {
                     <TopMenuItem title="Contact" pageRef='/contact'/>
                 </div>
                 <Link href={session ? "/api/auth/signout" : "/api/auth/signin"}>
-                    <div className="text-[14px] bg-black text-white px-[24px] py-[14px] rounded-lg border hover:shadow-xl hover:bg-white hover:text-black duration-300">
+                    <div className="text-[14px] bg-black text-white px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-white hover:text-black duration-300">
                             {session ? `Sign Out` : `Sign In`}
                     </div>
                 </Link>

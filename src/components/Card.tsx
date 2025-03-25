@@ -2,7 +2,7 @@ import Image from 'next/image';
 import InteractiveCard from './InteractiveCard';
 import { Rating } from '@mui/material';
 
-export default function Card({venueName, imgSrc, dispatch, rating}:{venueName:string, imgSrc:string, dispatch?: Function, rating?: number}) {
+export default function Card({venueName, imgSrc, rating}:{venueName:string, imgSrc:string, rating: number}) {
 
     return (
         <InteractiveCard>
@@ -17,20 +17,12 @@ export default function Card({venueName, imgSrc, dispatch, rating}:{venueName:st
             <div className={`w-full h-[15%] p-[10px] text-black`}>
                 {venueName}
             </div>
-            {
-                dispatch? <Rating
+            <Rating
                 className={`p-[10px]`}
-                name={`${venueName} Rating`}
-                id={`${venueName} Rating`}
-                data-testid={`${venueName} Rating`}
                 value={rating || 0}
-                onChange={(event, newValue) => {
-                    event.stopPropagation();
-                    dispatch(venueName, newValue);
-                }}
-                onClick={(e) => e.stopPropagation()}
-                /> : ''
-            }
+                precision={0.5}
+                readOnly
+            />
         </InteractiveCard>
     )
 }
