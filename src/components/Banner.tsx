@@ -1,5 +1,4 @@
 'use client'
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation'
 
@@ -24,7 +23,7 @@ export default function Banner() {
                 <button className="text-[16px] bg-black text-white px-[24px] py-[14px] rounded-lg hover:shadow-xl hover:bg-white hover:text-black duration-300" 
                 onClick={(e) => {
                     e.stopPropagation();
-                    router.push('/hotels');
+                    router.push('/hotel');
                 }}>
                     See All Hotels
                 </button>

@@ -1,7 +1,7 @@
-export default async function getVenue(id: string) {
-    const response = await fetch(`http://localhost:5000/api/v1/hotels`);
+export default async function getHotel(id: string) {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/hotels/${id}`);
 
-    if(!response.ok) throw new Error("Failed to fetch venue");
+    if(!response.ok) throw new Error("Failed to fetch single hotel");
 
     return await response.json();
 }

@@ -10,9 +10,9 @@ export default function Footer() {
                 </div>
                 <div className="flex flex-col gap-5 text-black mr-[8%]">
                     <Link href="/">Home</Link>
-                    <Link href="/">Hotels</Link>
-                    <Link href="/">Booking</Link>
-                    <Link href="/">Contact Us</Link>
+                    <Link href="/hotel">Hotels</Link>
+                    <Link href="/booking">Booking</Link>
+                    <Link href="/contact">Contact Us</Link>
                 </div>
             </div>
         </div>

@@ -1,19 +1,31 @@
 'use client'
 import Card from '@/components/Card'
+import getHotels from '@/libs/getHotels';
 import Link from 'next/link'
+import { useEffect, useState } from 'react';
 
 export default function CardPanel() {
-    
-    /*
-        Mock Data for Demonstration Only
-    */
-   
-   const mockVenueRepo = [
-       { vid: "001", name: "The Bloom Pavilion", image:"/img/bloom.jpg", rating: 2.5 },
-       { vid: "002", name: "Spark Space", image:"/img/sparkspace.jpg", rating: 3},
-       { vid: "003", name: "The Grand Table", image:"/img/grandtable.jpg", rating: 5 }
-    ];
-    
+
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+        const fetchItems = async () => {
+            try {
+                const response = await getHotels();
+
+                if(!response) throw new Error("Failed to fetch data.");
+
+                setItems(response);
+                
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+        fetchItems();
+
+    }, []);
+
     return (
         <div className="mt-[9%]">
             <div className="text-3xl text-black font-bold mb-[30px]">
@@ -21,11 +33,17 @@ export default function CardPanel() {
             </div>
             <div className="flex justify-around mt-[20px]">
                 {
-                    mockVenueRepo.map((venueItem) => 
-                        <Link key={venueItem.name} href={`/venue/${venueItem.vid}`} className="w-1/4">
-                            <Card hotelName={venueItem.name} imgSrc={venueItem.image} rating={venueItem.rating}/>
+                    items.data ?
+                    items.data.slice(0, 3).map((item) => 
+                        <Link key={item.name} href={`/hotel/${item.id}`} className="w-1/4">
+                            <Card 
+                            hotelName={item.name} 
+                            imgSrc={`/img/hotel.png`} 
+                            rating={item.userRatingCount>0 ? parseFloat(item.ratingSum / item.userRatingCount).toFixed(2) : 0}
+                            dailyRate={item.dailyRate}/>
                         </Link>
                     )
+                    : "Loading"
                 }
             </div>
         </div>

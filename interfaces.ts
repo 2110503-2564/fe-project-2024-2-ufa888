@@ -1,4 +1,4 @@
-export interface VenueItem {
+export interface HotelItem {
     _id: string,
     name: string,
     address: string,
@@ -6,17 +6,18 @@ export interface VenueItem {
     province: string,
     postalcode: string,
     tel: string,
-    picture: string,
-    dailyrate: number,
+    dailyRate: number,
     __v: number,
-    id: string
+    id: number,
+    userRatingCount: number,
+    ratingSum: number
   }
   
-export interface VenueJson {
+export interface HotelJson {
     success: boolean,
     count: number,
     pagination: Object,
-    data: VenueItem[]
+    data: HotelItem[]
   }
 
 export interface BookingItem {

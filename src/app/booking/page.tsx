@@ -1,63 +1,86 @@
 'use client'
 import DateReserve from '@/components/DateReserve'
 import { Select, MenuItem, TextField, SelectChangeEvent } from '@mui/material'
-import { MouseEventHandler, useState } from 'react'
+import { useState } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@/redux/store'
-import { addBooking } from '@/redux/features/bookSlice'
-import { BookingItem } from '../../../interfaces'
+import { useSearchParams } from 'next/navigation'
+import BookingList from '@/components/BookingList'
+import { useEffect } from 'react'
+import getHotel from '@/libs/getHotel'
+import { useSession } from 'next-auth/react'
 
 export default function Booking() {
 
-    const dispatch = useDispatch<AppDispatch>();
-
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
     
-    const [reserveDate, setReserveDate] = useState<Dayjs|null>(null);
-    const [tel, setTel] = useState<string>("");
-    const [nameLastname, setNameLastName] = useState<string>("");
-    const [venue, setVenue] = useState<string>("Bloom");
+    const { data:session } = useSession();
+
+    const [checkInDate, setCheckInDate] = useState<Dayjs|null>(null);
+    const [checkOutDate, setCheckOutDate] = useState<Dayjs|null>(null);
+    
+    if(!session) return (
+        <div>
+            <script>
+                window.location.path = "/api/v1/auth/signin"
+            </script>
+        </div>
+    )
+    
+    if(!id) return (
+        <div>
+            <BookingList/>
+        </div>
+    );
+
+    const [item, setItem] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchItems = async () => {
+            try {
+                const response = await getHotel(id);
+
+                if(!response) throw new Error("Failed to fetch data.");
+
+                setItem(response);
+                
+            } catch(err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchItems();
+
+    }, []);
+
+    if(loading) return (<div></div>)
 
     const makeBooking = () => {
-        console.log("test");
-        if(nameLastname && venue && tel && reserveDate) {
-            const item:BookingItem = {
-                nameLastname: nameLastname,
-                tel: tel,
-                venue: venue,
-                bookDate: dayjs(reserveDate).format("YYYY/MM/DD"),
-            }
-            dispatch(addBooking(item));
+        if(checkInDate && session && checkOutDate) {
+            alert("test");
         }
-    }
-    
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setNameLastName(event.target.value);
-    }
-
-    const handleTelChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setTel(event.target.value);
-    }
-
-    const handleVenueChange = (event: SelectChangeEvent<string>) => {
-        setVenue(event.target.value);
     }
 
     return (
-        <div>
+        <div className="w-full">
+            <div className="text-2xl text-center text-black mb-[3%]">{item.data.name}</div>
             <form action="#" className="bg-slate-100 rounded-lg space-y-5 w-[100%] p-10 flex flex-col justify-center items-center">
-                <TextField id="name" label="Name-Lastname" name="Name-Lastname" variant='standard' value={nameLastname} onChange={handleNameChange}/>
-                <TextField id="contact" label="Contact-Number" name="Contact-Number" variant='standard' value={tel} onChange={handleTelChange}/>
-                <Select variant="standard" id="venue" className="h-[2em] w-[200px]" value={venue} onChange={handleVenueChange}>
-                    <MenuItem value="Bloom">The Bloom Pavilion</MenuItem>
-                    <MenuItem value="Spark">Spark Space</MenuItem>
-                    <MenuItem value="GrandTable">The Grand Table</MenuItem>
-                </Select>
-                <DateReserve onDateChange={(value:Dayjs)=>{setReserveDate(value);}}/>
+                <div>
+                    <div className="text-md text-black">Check-In Date</div>
+                    <DateReserve onDateChange={(value:Dayjs)=>{setCheckInDate(value);}}/>
+                </div>
+                <div>
+                    <div className="text-md text-black">Check-Out Date</div>
+                    <DateReserve onDateChange={(value:Dayjs)=>{setCheckOutDate(value);}}/>
+                </div>
                 <button name="Book Venue" className="block rounded-md bg-sky-600 hover:bg-indigo-600 p-3 shadow-sm text-white" onClick={makeBooking}>
-                    Book Venue
+                    Book Hotel
                 </button>
             </form>
         </div>
     )
+
 }
