@@ -8,6 +8,9 @@ import BookingList from '@/components/BookingList'
 import { useEffect } from 'react'
 import getHotel from '@/libs/getHotel'
 import { useSession } from 'next-auth/react'
+import addBooking from '@/libs/addBooking'
+import { ToastContainer, toast } from 'react-toastify'
+import { redirect } from 'next/navigation'
 
 export default function Booking() {
 
@@ -19,13 +22,7 @@ export default function Booking() {
     const [checkInDate, setCheckInDate] = useState<Dayjs|null>(null);
     const [checkOutDate, setCheckOutDate] = useState<Dayjs|null>(null);
     
-    if(!session) return (
-        <div>
-            <script>
-                window.location.path = "/api/v1/auth/signin"
-            </script>
-        </div>
-    )
+    if(!session) return ( <div></div>)
     
     if(!id) return (
         <div>
@@ -58,10 +55,13 @@ export default function Booking() {
 
     if(loading) return (<div></div>)
 
-    const makeBooking = () => {
+    const makeBooking = async () => {
         if(checkInDate && session && checkOutDate) {
-            alert("test");
-        }
+            const response = await addBooking(item.data._id, session.user.token, checkInDate.format("YYYY-MM-DD"), checkOutDate.format("YYYY-MM-DD"));
+            if(response.success == true) {
+                toast.success("Booking Successfully.");
+            } else toast.error(response.message ? response.message : `An Error has occurred while booking a hotel.`);
+        } else toast.error("Invalid Date or Session.");
     }
 
     return (
@@ -76,10 +76,14 @@ export default function Booking() {
                     <div className="text-md text-black">Check-Out Date</div>
                     <DateReserve onDateChange={(value:Dayjs)=>{setCheckOutDate(value);}}/>
                 </div>
-                <button name="Book Venue" className="block rounded-md bg-sky-600 hover:bg-indigo-600 p-3 shadow-sm text-white" onClick={makeBooking}>
+                <button name="Book Venue" className="block rounded-md bg-sky-600 hover:bg-indigo-600 p-3 shadow-sm text-white" onClick={(e) => {
+                    e.preventDefault();
+                    makeBooking();
+                }}>
                     Book Hotel
                 </button>
             </form>
+            <ToastContainer/>
         </div>
     )
 
