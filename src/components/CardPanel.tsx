@@ -22,8 +22,8 @@ export default function CardPanel() {
             <div className="flex justify-around mt-[20px]">
                 {
                     mockVenueRepo.map((venueItem) => 
-                        <Link key={venueItem.name} href={`/venue/${venueItem.vid}`} className="w-1/5">
-                            <Card venueName={venueItem.name} imgSrc={venueItem.image} rating={venueItem.rating}/>
+                        <Link key={venueItem.name} href={`/venue/${venueItem.vid}`} className="w-1/4">
+                            <Card hotelName={venueItem.name} imgSrc={venueItem.image} rating={venueItem.rating}/>
                         </Link>
                     )
                 }
